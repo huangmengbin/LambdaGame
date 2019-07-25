@@ -1,6 +1,6 @@
 package cn.seecoder;
 
-public class Bool {     //我也不想的啊。。。
+class Bool {     //我也不想的啊。。。
 
     private boolean value;
 

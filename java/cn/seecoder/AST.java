@@ -11,6 +11,7 @@ public abstract class AST {
     final static int wordSize =14;
 
 
+
     AST father;
     int left_distance;
     int right_distance;
@@ -18,7 +19,6 @@ public abstract class AST {
     GameExploration card;////还有什么别的方法呢
     JButton button=new JButton();//还有什么别的方法呢
 
-    private final String[] alphabet= Global.alphabet;
 
     static void replaceAST(AST oldAST,AST newAST){
         if(oldAST.father==null){
@@ -55,64 +55,13 @@ public abstract class AST {
 
     protected abstract AST clone();//不知怎么的突然想写这个，感觉比之前的快多了
 
-    //protected abstract boolean equals(AST that);
-
     public abstract AST find_and_B_change(Bool have_changed);
 
     public abstract Lexer toLexer();
 
-    protected abstract void a_change (String oldString , String newString, boolean shold_replace);
+    protected abstract void a_change (String oldString , String newString);
 
-    void B_replace_a_change(Lexer rhs_lexer, Lexer bodylexer, AST ast/*rhs.clone*/, String label){
-        //功能是
-        //自动a规约
-
-        //先发现需要a替换的位置
-
-        ArrayList<String>temp1=new ArrayList<>();
-        ArrayList<String>conflict=new ArrayList<>();
-        ArrayList<String>allString=new ArrayList<>();
-
-        for(String i: rhs_lexer.my_token){
-            if(!temp1.contains(i) &&  Lexer.isLCID(i)  &&  !i.equals(label)){
-                temp1.add(i);
-            }
-            if(!allString.contains(i) && Lexer.isLCID(i)){
-                allString.add(i);
-            }
-        }
-
-        for(String i : bodylexer.my_token){
-            if(!allString.contains(i) && Lexer.isLCID(i)){
-                allString.add(i);
-            }
-        }
-
-        for (String i : temp1){
-            if(!conflict.contains(i) && bodylexer.my_token.contains(i)){//发现了字母冲突的地方
-                conflict.add(i);//那就把它加进去
-            }
-        }
-
-        int alphabetPtr=0;//记录上次找到的位置，可以提高一点点效率
-        String new_one;
-        for (String old_one : conflict ){
-            for(int i=alphabetPtr;i<alphabet.length;i++){
-                new_one=alphabet[i];
-                if(!allString.contains(new_one)){
-                    allString.add(new_one);
-                    this.a_change(old_one,new_one,false);//a等价替换
-                    alphabetPtr=0;
-                    break;
-                }
-            }
-        }
-
-        this.B_replace_not_a_change(ast,label);//开始B替换第二步
-    }
-    //实际上B_replace1,B_replace2可以写在interpreter里头，会更清晰
-
-    void B_replace_not_a_change(AST ast, String label){
+    void B_replace_1(AST ast, String label){
         //我们要把很多东西替成传进来的那个AST
         if (this instanceof AST_Application){//1.
             if(((AST_Application) this).lhs instanceof AST_Identifier){
@@ -122,7 +71,7 @@ public abstract class AST {
                 }
             }
             else {
-                ((AST_Application) this).lhs.B_replace_not_a_change(ast, label);
+                ((AST_Application) this).lhs.B_replace_1(ast, label);
             }
             if(((AST_Application) this).rhs instanceof AST_Identifier){
                 if(((AST_Identifier) ((AST_Application) this).rhs).getName()  .equals(label)){
@@ -131,7 +80,7 @@ public abstract class AST {
                 }
             }
             else {
-                ((AST_Application) this).rhs.B_replace_not_a_change(ast, label);
+                ((AST_Application) this).rhs.B_replace_1(ast, label);
             }
         }
 
@@ -146,7 +95,7 @@ public abstract class AST {
                     }
                 }
                 else {
-                    ((AST_Abstraction) this).body.B_replace_not_a_change(ast, label);
+                    ((AST_Abstraction) this).body.B_replace_1(ast, label);
                 }
             }
         }
@@ -233,14 +182,14 @@ public abstract class AST {
                         x2=x - ast.left_distance - (wordSize * 3 + basicSize) / 2;
                     }
 
-                    if(false){
-                        panel.add(new Line(x1,y1,x2,y2));//斜模式
+                    Color color=Color.black;
+                    if(ast instanceof AST_Identifier && x2>x1 && ast.father instanceof AST_Abstraction){
+                        color=Color.RED.brighter();
+                    }
+                    if(true){
+                        panel.add(new Line(x1,y1,x2,y2,color));//斜模式
                     }
                     else {
-                        Color color=Color.black;
-                        if(ast instanceof AST_Identifier && x2>x1 && ast.father instanceof AST_Abstraction){
-                            color=Color.RED;
-                        }
                         panel.add(new Line(x2,y2,x2,y1/2,Color.black));//看你想根部那条是什么色
                         panel.add(new Line(x1,y1,x1,y1/2,color));
                         panel.add(new Line(x1,y1/2,x2,y1/2,color));
@@ -260,7 +209,7 @@ public abstract class AST {
             }////////////////////////////////////////妈的
             if(ast.father instanceof AST_Application){
                 if(((AST_Application) ast.father).lhs!=ast && ((AST_Application) ast.father).rhs!=ast){
-                    ast.button.setBackground(Color.orange);
+                    ast.button.setBackground(Color.BLUE);
                 }
             }
             if(ast.father instanceof AST_Abstraction){

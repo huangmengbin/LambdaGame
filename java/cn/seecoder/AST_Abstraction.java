@@ -1,6 +1,7 @@
 package cn.seecoder;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ class AST_Abstraction extends AST {
         param.father=this;
         body.father=this;
         button.setText("Abs");
+        button.setBackground(Color.yellow.brighter());
         button.addActionListener(new TreeListener());
     }
 
@@ -86,13 +88,9 @@ class AST_Abstraction extends AST {
         return this;
     }
 
-    protected void a_change(String oldString , String newString, boolean should_replace){
-        if(   param.getName().equals(oldString)  ){
-            param.setName(newString);
-            body.a_change(oldString,newString,true);
-        }
-        else {
-            body.a_change(oldString, newString, should_replace);
+    protected void a_change(String oldString , String newString){
+        if(   ! param.getName().equals(oldString)  ){//相等则不做处理
+            body.a_change(oldString, newString);
         }
     }
 

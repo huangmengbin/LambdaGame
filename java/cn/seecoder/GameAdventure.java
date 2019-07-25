@@ -31,6 +31,10 @@ class GameAdventure extends GameExploration {
         inputButton.setText("重玩");
 
 
+        JButton button=new JButton("目的 ： "+destination);
+        button.setEnabled(false);
+        button.setBounds(480,0,350,28);
+        panel.add(button);
 
 
         inputTextField.setText(source);
@@ -43,16 +47,19 @@ class GameAdventure extends GameExploration {
         super.updateMessage();
         if(abstraction.body.toString(1).equals(destination)){//通关了
 
-
+            passSuccessfully=true;
+            checkHistory(abstraction.body,false);
             int history;
+
+            String starMessage="？星通关";
+            String newRecordOrNot="成功";
 
             try{
                 File file=new File(source);
                 Scanner in =new Scanner(file);
                 history=in.nextInt();
 
-                String starMessage="？星通关";
-                String newRecordOrNot="成功";
+
 
                 if(step<history){//更新历史纪录
                     newRecordOrNot="新记录  ";
@@ -73,29 +80,35 @@ class GameAdventure extends GameExploration {
                     starMessage="两星通关";
                 }
 
-                //JButton[] bs={new JButton("确定")};//这个怎么搞？？？得修改。。。。
-                JOptionPane.showOptionDialog(cards,null,newRecordOrNot+starMessage,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-
-                JFrame frame=new JFrame("通关信息：");
-                frame.setBounds(50,50,1800,800);
-                frame.setVisible(true);
-                frame.add(overScrollpane);
-
             }
             catch (Exception e){
                 e.printStackTrace();
             }
 
-            panel.removeAll();
-            cards.removeAll();
-            GameWelcome welcome=new GameWelcome(cards);
-            cards.add(welcome.panel);
-            GamesChoosing chooseGames=new GamesChoosing(cards);
-            cards.add(chooseGames.panel);
-            CardLayout cl=(CardLayout)(cards.getLayout());
-            cl.last(cards);
 
-            cards.updateUI();
+
+            Object[] bs=new Object[]{"重玩","返回","查看通关信息"};//这个怎么搞？？？得修改。。。。
+            int chooseMessage = JOptionPane.showOptionDialog(panel,newRecordOrNot+starMessage,step+"步"  ,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,bs,bs[1]);
+
+            if(chooseMessage==0){
+                inputSure();
+            }
+            else if(chooseMessage==1) {
+                panel.removeAll();
+                cards.removeAll();
+                GameWelcome welcome = new GameWelcome(cards);
+                cards.add(welcome.panel);
+                GamesChoosing chooseGames = new GamesChoosing(cards);
+                cards.add(chooseGames.panel);
+                CardLayout cl = (CardLayout) (cards.getLayout());
+                cl.last(cards);
+
+                cards.updateUI();
+            }
+            else if(chooseMessage==2){
+                printMessage();
+            }
+
         }
     }
 }

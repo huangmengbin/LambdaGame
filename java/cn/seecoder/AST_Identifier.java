@@ -1,6 +1,7 @@
 package cn.seecoder;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,49 +14,61 @@ public class AST_Identifier extends AST {
     private String name; //名字
     private String value;//没什么用的东西
 
-    void setName(String name){
+    private void setName(String name){
         this.name=name;
+        if(isFunction(name)){
+            button.setBackground(Color.CYAN);
+        }
         button.setText(name);
     }
     String getName(){
         return name;
     }
 
+
+    private boolean isFunction(String name){
+        return name.charAt(0)>='A' && name.charAt(0)<='Z';//首字母大写 视为抽象函数
+    }
     class TreeListener implements ActionListener {
-        private boolean isFunction(String name){
-            return name.charAt(0)>='A' && name.charAt(0)<='Z';//首字母大写 视为抽象函数
-        }
+
         public void actionPerformed(ActionEvent e){
-            if(isFunction(name)){//视为抽象函数
+            if(isFunction(name)){//视为抽象函数,展开它
                 AST ast=Function.FunctionString_to_AST(name,AST_Identifier.this.card,AST_Identifier.this.father);
                 if(ast!=null) {
                     replaceAST(AST_Identifier.this, ast);
                     card.updateMessage();
                 }
             }
-            else {//视为变量名
-                if(AST_Identifier.this.father instanceof AST_Abstraction) {
-                    String newName = JOptionPane.showInputDialog(null, "请输入新的变量名", "a规约", 1);
-                    if ( newName!=null  &&  !isFunction(newName) ) {
-                        AST_Identifier.this.father.a_change(name,newName.trim(),false);//a规约
-                        card.updateMessage();
+            else {//视为变量名，a规约
+                if(father instanceof AST_Abstraction
+                &&((AST_Abstraction) father).param==AST_Identifier.this) {
+                    try {
+                        String newName = JOptionPane.showInputDialog(null, "请输入新的变量名", "a规约", 1).trim();
+                        CheckLegal.check_IdentifyName(newName);
+                        if (!isFunction(newName) && !newName.equals(name)) {
+                            ((AST_Abstraction) father).body.a_change(name, newName);
+                            AST_Identifier.this.setName(newName);
+                            card.updateMessage();
+                            }
+                        }
+                    catch (Exception e1){
+                        e1.printStackTrace();
                     }
                 }
             }
         }
     }
 
-    public AST_Identifier(String n, GameExploration cards){
-        name = n;
+    public AST_Identifier(String name, GameExploration cards){
+        setName(name);
         this.card =cards;
-        button.setText(n);
         button.addActionListener(new TreeListener());
     }
 
     public AST find_and_B_change(Bool have_changed){return this;}
 
-    protected void a_change(String oldString , String newString, boolean should_replace){
-        if(name.equals(oldString)&&should_replace){
+    protected void a_change(String oldString , String newString){
+        if(name.equals(oldString)){
             setName(newString);//封装？？
         }
     }

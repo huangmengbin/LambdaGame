@@ -169,7 +169,6 @@ public class Main {
             app(MAX, FOUR, TWO),//29
             app(MIN, ONE, TWO),//30
             app(MIN, FOUR, TWO),//31
-            "((\\x.x)b)"
      };
 
 }

@@ -22,8 +22,6 @@ public class Lexer {
             CheckLegal.check_tokens(my_token);
         }catch (Exception e){
             my_token.clear();
-            my_token.add("wrong");
-            my_token.add("input");
             e.printStackTrace();
         }
         my_token=full_parenthesis().my_token;//额 加全括号

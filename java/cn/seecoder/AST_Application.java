@@ -91,7 +91,7 @@ class AST_Application extends AST{
 
         if(!have_changed.isTrue() && lhs instanceof AST_Abstraction){
             have_changed.setValue(true);//找到了hhh
-            AST temp = this.B_replace();//它好像不给写this=this.B_replace();   hhh
+            AST temp = this.B_replace_0();//它好像不给写this=this.B_replace_0();   hhh
             temp.father=this.father; ///???
             return temp;
         }
@@ -102,7 +102,7 @@ class AST_Application extends AST{
         }
     }
 
-    private AST B_replace(){//B替换第0步，即自己是APP，左边是Abs 的时候，开始替代
+    private AST B_replace_0(){//B替换第0步，即自己是APP，左边是Abs 的时候，开始替代
 
 
         String label =((AST_Abstraction) lhs).param.getName();
@@ -117,18 +117,15 @@ class AST_Application extends AST{
         }
 
         else {
-            //Lexer lexer = rhs.toLexer();
-            //Lexer bodyLexer=((AST_Abstraction) lhs).body.toLexer();
-            //((AST_Abstraction) lhs).body.B_replace_a_change(lexer,bodyLexer, rhs.clone(),label);//进入了B替换第1步
-            ((AST_Abstraction) lhs).body.B_replace_not_a_change(rhs.clone(),label);
+            ((AST_Abstraction) lhs).body.B_replace_1(rhs.clone(),label);
             return ((AST_Abstraction) lhs).body;
         }
 
     }
 
-    protected void a_change(String oldString , String newString, boolean should_replace){
-        lhs.a_change(oldString,newString,should_replace);
-        rhs.a_change(oldString,newString,should_replace);
+    protected void a_change(String oldString , String newString){
+        lhs.a_change(oldString,newString);
+        rhs.a_change(oldString,newString);
     }
 
     int calculate_node_distance(){

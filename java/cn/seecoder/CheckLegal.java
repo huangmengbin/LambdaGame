@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 abstract class CheckLegal {
 
-    static void check_string(String source) throws Exception{
+    static void check_source_string(String source) throws Exception{
         int number = 0;
 
             for (int i = 0; i < source.length(); i++) {
@@ -20,14 +20,25 @@ abstract class CheckLegal {
                     case '（':
                     case '）':
                         throw new Exception("怎么会有中文的括号？？？");
-                    case '-':
-                    case '^':
-                    case '/':
-                        throw new Exception("暂时不支持此类字符："+source.charAt(i));
                 }
             }
         if(number!=0){
             throw new Exception("括号未匹配！");
+        }
+    }
+
+    static void check_IdentifyName(String string)throws Exception{
+        if(string==null ){
+            throw new Exception("不允许空的字符串");
+        }
+        if(string.equals("")){
+            throw new Exception("不允许长度为0的字符串");
+        }
+        for (int i = 0; i < string.length(); i++) {
+            switch (string.charAt(i)){
+                case '(': case ')': case '）': case '（': case '.':case '\\': case ' ':
+                    throw new Exception("不支持此类字符：  '"+string.charAt(i)+"'");
+            }
         }
     }
 
