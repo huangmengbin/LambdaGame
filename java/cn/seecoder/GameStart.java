@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GameStart {
 
-    JPanel cards=new JPanel(new CardLayout());
+    private JPanel cards=new JPanel(new CardLayout());
 
     GameStart(){
         JFrame frame=new JFrame();

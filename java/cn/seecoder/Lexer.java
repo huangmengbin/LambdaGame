@@ -15,7 +15,9 @@ public class Lexer {
     ArrayList<String> my_token = new ArrayList<>();
 
     Lexer(String source) {
+
         this.init(source.trim());
+
         try {
             CheckLegal.check_tokens(my_token);
         }catch (Exception e){

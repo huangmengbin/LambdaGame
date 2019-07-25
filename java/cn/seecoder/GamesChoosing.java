@@ -29,8 +29,8 @@ public class GamesChoosing {
     static ArrayList<SetGame>gameList=new ArrayList<>();
     static {
         gameList.add(new SetGame("SUCC THREE",8,4,"FOUR"));
-        gameList.add(new SetGame("POW THREE TWO",8,4,"NINE"));
-        gameList.add(new SetGame("MIN (POW TWO THREE) FIVE",8,4,"FIVE"));
+        gameList.add(new SetGame("POW THREE TWO",11,9,"NINE"));
+        gameList.add(new SetGame("SUB FIVE THREE",8,4,"TWO"));
         gameList.add(new SetGame("MAX THREE FOUR",80,50,"FOUR"));
 
     }
@@ -114,7 +114,7 @@ public class GamesChoosing {
             this.destination=destination;
         }
         public void actionPerformed(ActionEvent e){
-            GameRunning game=new GameRunning(source,cards,twoStar,threeStar);
+            GameAdventure game=new GameAdventure(source,cards,twoStar,threeStar,destination);
             cards.add(game.panel);
             CardLayout cl=(CardLayout)(cards.getLayout());
             cl.last(cards);

@@ -6,10 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GameWelcome {
-    JPanel panel=new JPanel(null);
-    JPanel cards;
-    JButton startGame=new JButton("冒险模式");
-    JButton freeGame=new JButton("创造模式");
+    JPanel panel=new JPanel();
+    private JPanel cards;
+    private JButton startGame=new JButton("冒险模式");
+    private JButton freeGame=new JButton("探索模式");
     GameWelcome(JPanel cards){
 
         this.cards=cards;
@@ -33,7 +33,7 @@ public class GameWelcome {
                 cards.updateUI();
             }
             else if(e.getSource().equals(freeGame)){
-                GameCreating printTree_gui=new GameCreating(cards);
+                GameExploration printTree_gui=new GameExploration(cards);
                 cards.add(printTree_gui.panel);
                 cl.last(cards);
                 cards.updateUI();

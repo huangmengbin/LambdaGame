@@ -43,6 +43,37 @@ abstract class Function {
 
     }
 
+    static AST FunctionString_to_AST(String source, GameExploration card, AST father){
+        AST ast=null;
+        for(int i=key_value.size()-2;i>=0;i-=2){
+            if(source.equals(key_value.get(i))){
+                Lexer lexer=new Lexer(key_value.get(i+1));
+                Parser parser=new Parser(lexer);
+                ast=parser.parse(card);
+                //ast.father=father;
+                break;
+            }
+        }
+        return ast;
+    }
+
+    static AST_Identifier AST_to_FunctionIdentify(AST oldAST,String FunctionName,GameExploration card, AST father){
+
+        for(int i=key_value.size()-2;i>=0;i-=2){
+            if(FunctionName.equalsIgnoreCase(key_value.get(i))){//???
+                Lexer lexer = new Lexer(key_value.get(i + 1));
+                Parser parser = new Parser(lexer);
+                AST temp=parser.parse(null);
+                if(temp.toString(0).equals(oldAST.toString(0))){
+                    AST_Identifier identifier=new AST_Identifier(key_value.get(i),card);
+                    //identifier.father=father;
+                    return identifier;
+                }
+            }
+        }
+        return null;
+    }
+
     static String replace(String source){
         for(int i= key_value.size()-2;i>=0;i-=2){
             source=source.replace(key_value.get(i),key_value.get(i+1));
@@ -189,7 +220,7 @@ abstract class Function {
                     "FOUR", "(\\f.(\\x.(f(f(f(f x))))))",
                     "FIVE", "(\\f.(\\x.(f(f(f(f(f x)))))))",
                     "SIX", "(\\f.(\\x.(f(f(f(f(f(f x))))))))",
-                    "SIXSEVEN", "(67_NB)",
+                    "SIXSEVEN", "67_NB",
                     "SEVEN", "(\\f.(\\x.(f(f(f(f(f(f(f x)))))))))",
                     "EIGHT", "(\\f.(\\x.(f(f(f(f(f(f(f(f x))))))))))",
                     "NINE", "(\\f.(\\x.(f(f(f(f(f(f(f(f(f x)))))))))))",
@@ -197,11 +228,11 @@ abstract class Function {
                     "ELEVEN", "(\\f.(\\x.(f(f(f(f(f(f(f(f(f(f(f x)))))))))))))",
                     "TWELVE", "(\\f.(\\x.(f(f(f(f(f(f(f(f(f(f(f(f x))))))))))))))",
                     "SUCC", "(\\n.(\\f.(\\x.(f((n f)x)))))",
-                    "PLUS", "(\\m.(\\n.((mSUCC)n)))",
+                    "PLUS", "(\\m.(\\n.((m SUCC)n)))",
                     "MULT", "(\\m.(\\n.(\\f.(m(n f)))))",
                     "POW", "(\\b.(\\e.(e b)))",
                     "PRED", "(\\n.(\\f.(\\x.(((n(\\g.(\\h.(h(g f)))))(\\u.x))(\\v.v)))))",
-                    "SUB", "(\\m.(\\n.((nPRED)m)))",
+                    "SUB", "(\\m.(\\n.((n  PRED)m)))",
                     "TRUE", "(\\u.(\\v.u))",
                     "FALSE", "(\\u.(\\v.v))",
                     "AND", "(\\p.(\\q.((p q)p)))",
@@ -209,20 +240,20 @@ abstract class Function {
                     "NOT", "(\\p.(\\a.(\\b.((p b)a))))",
                     "IF", "(\\p.(\\a.(\\b.((p a)b))))",
                     "ISZERO", "(\\h.((h(\\t.FALSE))TRUE))",
-                    "LEQ", "(\\m.(\\n.(ISZERO((SUBm)n))))",
-                    "EQ", "(\\m.(\\n.((AND((LEQm)n))((LEQn)m))))",
-                    "LEQ", "(\\m.(\\n.(ISZERO((SUBm)n))))",
+                    "LEQ", "(\\m.(\\n.(ISZERO((SUB m)n))))",
+                    "EQ", "(\\m.(\\n.((AND((LEQ m)n))((LEQ n)m))))",
+                    "LEQ", "(\\m.(\\n.(ISZERO((SUB m)n))))",
                     "FACT1","(\\f.(\\n.((((n (\\t.(\\u.(\\v.v)))) (\\u.(\\v.u))) (\\f.(\\x.(f x)))) (\\b.(n (((f f) (\\f.(\\x.(((n (\\g.(\\h.(h (g f))))) (\\u.x)) (\\v.v))))) b))))))",
-                    "FACT", "(FACT1FACT1)",
-                    "FACT1", "(\\f.(\\n.(((ISZEROn)ONE)((MULTn)((f f)(PREDn))))))",
+                    "FACT", "(FACT1 FACT1)",
+                    "FACT1", "(\\f.(\\n.(((ISZERO n)ONE)((MULT n)((f f)(PRED n))))))",
                     "YYY","(\\g.((\\x.g(x x))(\\x.g(x x))))",
                     "FACT2","(\\f.(\\n.((((n (\\t.(\\u.(\\v.v)))) (\\u.(\\v.u))) (\\f.(\\x.(f x)))) (\\b.(n ((f (\\f.(\\x.(((n (\\g.(\\h.(h (g f))))) (\\u.x)) (\\v.v))))) b))))))",
                     "FACTY","YYY FACT2",
-                    "FACT2","(\\f.(\\n.(((ISZEROn)ONE)((MULTn)(f(PREDn))))))",
-                    "MAX", "(\\x.(\\y.(((IF((LEQx)y))y)x)))",
-                    "MIN", "(\\x.(\\y.(((IF((LEQx)y))x)y)))",
-                    "CDR", "(\\p.(pFALSE))",
-                    "CAR", "(\\p.(pTRUE))",
+                    "FACT2","(\\f.(\\n.(((ISZERO n)ONE)((MULT n)(f(PRED n))))))",
+                    "MAX", "(\\x.(\\y.(((IF((LEQ x)y))y)x)))",
+                    "MIN", "(\\x.(\\y.(((IF((LEQ x)y))x)y)))",
+                    "CDR", "(\\p.(p FALSE))",
+                    "CAR", "(\\p.(p TRUE))",
                     "CONS", "(\\x.(\\y.(\\f.((f x)y))))",
                     "NULL", "(\\p.(p(\\x.(\\y.FALSE))))",
                     "NIL", "(\\x.TRUE)",

@@ -18,7 +18,7 @@ public class Parser {
         this.lexer = lexer;
     }
 
-    AST parse(GameCreating card){//来构建树了
+    AST parse(GameExploration card){//来构建树了
 
         try {
             AST ast = term(lexer,card);
@@ -37,7 +37,7 @@ public class Parser {
 
     }
 
-    private AST term(Lexer lexer, GameCreating card)throws Exception{
+    private AST term(Lexer lexer, GameExploration card)throws Exception{
 
         switch (lexer.getValue(0)) {
             case left_parenthesis:          //这个效率很低的，复杂度为O(n^2)，好在调用次数非常少
@@ -45,19 +45,19 @@ public class Parser {
 //-------------------------------------------------------------------------------------
                         switch (lexer.getValue(1)) {
                             case lambda:
-                                return new Abstraction
-                                        (new Identifier(lexer.getValue(2),card),
+                                return new AST_Abstraction
+                                        (new AST_Identifier(lexer.getValue(2),card),
                                                 term(lexer.subLexer(4, lexer.match(4) + 1),card),card);
                             case left_parenthesis:
                                 int temp1 = lexer.match(1) + 1;
                                 int temp2 = lexer.match(temp1) + 1;
-                                return new Application(
+                                return new AST_Application(
                                         term(lexer.subLexer(1, temp1),card),
                                         term(lexer.subLexer(temp1, temp2),card),
                                         card);
                             default:
-                                return new Application(
-                                        new Identifier(lexer.getValue(1),card),
+                                return new AST_Application(
+                                        new AST_Identifier(lexer.getValue(1),card),
                                         term(lexer.subLexer(2, lexer.match(2) + 1),card),card);
                             }
 //------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ public class Parser {
             case dot://理论上是不会遇到的
                 throw new Exception("...");
             default://普通的string
-                return new Identifier(lexer.getValue(),card);
+                return new AST_Identifier(lexer.getValue(),card);
             }
 
     }

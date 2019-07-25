@@ -33,7 +33,7 @@ abstract class CheckLegal {
 
     static void check_tokens(ArrayList<String> token) throws Exception{
         for(int i=0;i<token.size();i++){
-            if(token.get(i).equals("(")&&( token.get(i+1).equals(")")||token.get(i+2).equals(")") )){
+            if(token.get(i).equals("(")&&   (token.get(i+1).equals(")")||token.get(i+2).equals(")") )  ){
                 throw new Exception("可能存在冗余的括号");
             }
             if(token.get(i).equals("\\")&& !token.get(i+2).equals(".")){
