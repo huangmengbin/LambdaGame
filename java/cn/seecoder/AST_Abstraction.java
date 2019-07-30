@@ -14,7 +14,7 @@ class AST_Abstraction extends AST {
 
     class TreeListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            String newName = JOptionPane.showInputDialog(null, "请输入函数名称", "", 1);
+            String newName = JOptionPane.showInputDialog(null, "请输入函数名称", "抽象", JOptionPane.PLAIN_MESSAGE);
             if ( newName!=null  ) {//不考虑是否首字母大写
                 AST_Identifier identifier=Function.AST_to_FunctionIdentify(AST_Abstraction.this,newName.trim(),card,father);
                 if(identifier!=null){
@@ -25,7 +25,7 @@ class AST_Abstraction extends AST {
         }
     }
 
-    AST_Abstraction(AST_Identifier p, AST b, GameExploration cards){
+    AST_Abstraction(AST_Identifier p, AST b, GameFreelyExplore cards){
         param = p;
         body = b;
         this.card =cards;
@@ -42,17 +42,17 @@ class AST_Abstraction extends AST {
 
     final public String toString(int mode){
         switch (mode){
-            case 1:
+            case SIMPLIFY:
                 if(body instanceof AST_Application){
                     return "\\"+param.toString(mode)+"."+body.toString(mode)+"";
                 }
-            case 2:
+            case MEDIUM:
                 return "\\"+param.toString(mode)+"."+body.toString(mode)+"";      //不太完整的括号
-            case 3:
+            case FULL:
                 return "(\\"+param.toString(mode)+"."+body.toString(mode)+")";//完完整整的括号
             default:
                 this.change_to_seecoder(new HashMap<>());
-                return "\\."+body.toString0();
+                return this.toString0();
         }
     }
 

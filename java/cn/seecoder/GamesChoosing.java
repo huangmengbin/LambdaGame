@@ -13,12 +13,14 @@ public class GamesChoosing {
     JPanel panel=new JPanel(null);
     JPanel cards;
     JButton returnButton=new JButton("返回");
+    private JPanel smallpanel;
 
     static class SetGame{
         String source;
         private int twoStar;
         private int threeStar;
         private String destination;
+
         SetGame(String source,int twoStar,int threeStar,String destination){
             this.source=source;
             this.twoStar=twoStar;
@@ -36,26 +38,41 @@ public class GamesChoosing {
         gameList.add(new SetGame("PRED ZERO",12,9,"ZERO"));//6
         gameList.add(new SetGame("PRED FOUR",60,50,"THREE"));//7
         gameList.add(new SetGame("SUB FIVE THREE",60,52,"TWO"));//8
-        gameList.add(new SetGame("AND TRUE TRUE",10,8,"TRUE"));//9
-        gameList.add(new SetGame("AND TRUE FALSE",10,8,"FALSE"));//10
-        gameList.add(new SetGame("AND FALSE FALSE",10,8,"FALSE"));//11
-        gameList.add(new SetGame("OR TRUE TRUE",10,8,"TRUE"));//12
-        gameList.add(new SetGame("OR FALSE TRUE",10,8,"TRUE"));//13
-        gameList.add(new SetGame("OR FALSE FALSE",10,8,"FALSE"));//14
-        gameList.add(new SetGame("NOT TRUE",10,8,"FALSE"));//15
-        gameList.add(new SetGame("NOT FALSE",10,8,"TRUE"));//16
-        gameList.add(new SetGame("IF TRUE",10,8,"TRUE"));//17
-        gameList.add(new SetGame("IF TRUE SIX SEVEN",10,8,"SIX"));//18
-        gameList.add(new SetGame("IF FALSE SIX SEVEN",10,8,"SEVEN"));//19
-        gameList.add(new SetGame("ISZERO ZERO",10,6,"TRUE"));//20
-        gameList.add(new SetGame("ISZERO TWO",10,8,"FALSE"));//21
-        gameList.add(new SetGame("LEQ THREE TWO",45,40,"FALSE"));//22
-        gameList.add(new SetGame("LEQ TWO THREE",45,40,"TRUE"));//23
-        gameList.add(new SetGame("EQ ONE TWO",75,65,"FALSE"));//24
-        gameList.add(new SetGame("EQ TWO ONE",75,65,"FALSE"));//25
-        gameList.add(new SetGame("EQ ONE ONE",60,55,"TRUE"));//26
-        gameList.add(new SetGame("MIN ONE TWO",45,40,"ONE"));//27
-        gameList.add(new SetGame("MAX THREE FOUR",70,60,"FOUR"));//28
+        gameList.add(new SetGame("MULT FOUR ZERO",15,13,"ZERO"));//9
+        gameList.add(new SetGame("AND TRUE TRUE",10,8,"TRUE"));//10
+        gameList.add(new SetGame("AND TRUE FALSE",10,8,"FALSE"));//
+        gameList.add(new SetGame("AND FALSE FALSE",10,8,"FALSE"));//
+        gameList.add(new SetGame("OR TRUE TRUE",10,8,"TRUE"));//
+        gameList.add(new SetGame("OR FALSE TRUE",10,8,"TRUE"));//
+        gameList.add(new SetGame("OR FALSE FALSE",10,8,"FALSE"));//
+        gameList.add(new SetGame("NOT TRUE",10,8,"FALSE"));//
+        gameList.add(new SetGame("NOT FALSE",10,8,"TRUE"));//
+        gameList.add(new SetGame("IF TRUE",10,8,"TRUE"));//
+        gameList.add(new SetGame("IF TRUE SIX SEVEN",10,8,"SIX"));//
+        gameList.add(new SetGame("IF FALSE SIX SEVEN",10,8,"SEVEN"));//
+        gameList.add(new SetGame("ISZERO ZERO",10,6,"TRUE"));//
+        gameList.add(new SetGame("ISZERO TWO",10,8,"FALSE"));//
+        gameList.add(new SetGame("LEQ THREE TWO",45,40,"FALSE"));//
+        gameList.add(new SetGame("LEQ TWO THREE",45,40,"TRUE"));//
+        gameList.add(new SetGame("EQ ONE TWO",65,62,"FALSE"));//
+        gameList.add(new SetGame("EQ TWO ONE",65,62,"FALSE"));//
+        gameList.add(new SetGame("EQ ONE ONE",60,55,"TRUE"));//
+        gameList.add(new SetGame("MIN ONE TWO",45,40,"ONE"));//
+        gameList.add(new SetGame("MAX THREE FOUR",70,60,"FOUR"));//
+        gameList.add(new SetGame("FACT ZERO",15,13,"ONE"));//30
+        gameList.add(new SetGame("FACT ONE",45,42,"ONE"));//
+        gameList.add(new SetGame("FACT TWO",80,75,"TWO"));//
+        gameList.add(new SetGame("FACTY ZERO",18,16,"ONE"));//
+        gameList.add(new SetGame("FACTY ONE",50,47,"ONE"));//
+        gameList.add(new SetGame("CAR(CONS SIXSEVEN(CONS is666 NIL))",12,11,"67_NB"));//
+        gameList.add(new SetGame("CDR(CONS SIXSEVEN(CONS is666 NIL))",12,10,"CONS is666 NIL"));//
+        gameList.add(new SetGame("NULL NIL",6,5,"TRUE"));//
+        gameList.add(new SetGame("NULL (CONS SIX(CONS SEVEN NIL))",12,9,"FALSE"));//
+        gameList.add(new SetGame("NULL (CDR(CONS SIXSEVEN NIL))",16,14,"TRUE"));//
+        gameList.add(new SetGame("LENGTH NIL",18,16,"ZERO"));//
+        gameList.add(new SetGame("LENGTH (CONS SIXSEVEN NIL)",51,48,"ONE"));//
+        gameList.add(new SetGame("LENGTH (CDR (CONS 67NB NIL))",28,25,"ZERO"));//
+
         //gameList.add(new SetGame("",,,""));
     }
 
@@ -65,14 +82,22 @@ public class GamesChoosing {
         returnButton.setBounds(0,5,60,30);
         returnButton.addActionListener(new ret());
         panel.add(returnButton);
-        JPanel smallpanel=new JPanel();
+        smallpanel=new JPanel();
         JScrollPane jScrollPane=new JScrollPane(smallpanel);
         jScrollPane.createVerticalScrollBar();
         jScrollPane.createHorizontalScrollBar();
         jScrollPane.setBounds(10,60,1880,900);
         panel.add(jScrollPane);
         int number=gameList.size();
-        smallpanel.setLayout(new GridLayout(number/6,4,50,40));
+        smallpanel.setLayout(new GridLayout(14,4,50,40));
+
+        updateMessage();
+
+
+    }
+
+    void updateMessage(){
+        smallpanel.removeAll();
         int i=0;
         for(SetGame setGame:gameList) {
             i++;
@@ -117,12 +142,12 @@ public class GamesChoosing {
             else {
                 historyString="\n";
             }
-            button.setText("<html><center>"+i+". "+setGame.source+"</center><center>"+message+"</center><center>"+historyString+"</center></html>");
+            button.setText("<html><center><br><br>"+i+". "+setGame.source+"</center><center>"+message+"</center><center>"+historyString+"<br><br></center></html>");
             button.setFont(new Font(Font.SANS_SERIF,Font.BOLD,16));
             button.addActionListener(new choose(setGame.source,setGame.twoStar,setGame.threeStar,setGame.destination));
             smallpanel.add(button);
         }
-        panel.updateUI();
+        this.panel.updateUI();
     }
 
     class ret implements ActionListener {//返回键
@@ -145,11 +170,10 @@ public class GamesChoosing {
             this.destination=destination;
         }
         public void actionPerformed(ActionEvent e){
-            GameAdventure game=new GameAdventure(source,cards,twoStar,threeStar,destination);
+            GameAdventure game=new GameAdventure(source,cards,twoStar,threeStar,destination,GamesChoosing.this);
             cards.add(game.panel);
             CardLayout cl=(CardLayout)(cards.getLayout());
             cl.last(cards);
-            //JOptionPane.showMessageDialog(null,"目的："+destination,"开始游戏",JOptionPane.PLAIN_MESSAGE);
         }
     }
 }

@@ -21,7 +21,7 @@ class AST_Application extends AST{
     }
 
 
-    AST_Application(AST left, AST right, GameExploration cards){
+    AST_Application(AST left, AST right, GameFreelyExplore cards){
         lhs = left;
         rhs = right;
         this.button.setBackground(Color.pink);
@@ -40,7 +40,7 @@ class AST_Application extends AST{
 
     public String toString(int mode){
         switch (mode){
-            case 1:
+            case SIMPLIFY:
                 StringBuilder temp1=new StringBuilder(lhs.toString(mode));
                 StringBuilder temp2=new StringBuilder(rhs.toString(mode));
                 if(lhs instanceof AST_Abstraction){
@@ -53,7 +53,7 @@ class AST_Application extends AST{
                 }
                 return temp1.toString()+" "+temp2.toString();
 
-            case 2:
+            case MEDIUM:
                 StringBuilder temp3=new StringBuilder(rhs.toString(mode));
                     if(rhs instanceof AST_Abstraction){
                         temp3.insert(0,"(");

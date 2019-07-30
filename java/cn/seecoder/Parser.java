@@ -18,26 +18,12 @@ public class Parser {
         this.lexer = lexer;
     }
 
-    AST parse(GameExploration card){//来构建树了
-
-        try {
-            AST ast = term(lexer,card);
-
-            if (Global.to_seecoder) {//为了 给输出德布鲁因式 作准备
-                Map<String, Integer> map = new HashMap<>();
-                ast.change_to_seecoder(map);
-            }
-            return ast;
-
-        }catch (Exception e){
-            System.out.println("构建树时出错");
-            e.printStackTrace();
-            return null;
-        }
+    AST parse(GameFreelyExplore card){//来构建树了
+        return term(lexer,card);
 
     }
 
-    private AST term(Lexer lexer, GameExploration card)throws Exception{
+    private AST term(Lexer lexer, GameFreelyExplore card){
 
         switch (lexer.getValue(0)) {
             case left_parenthesis:          //这个效率很低的，复杂度为O(n^2)，好在调用次数非常少
@@ -61,12 +47,7 @@ public class Parser {
                                         term(lexer.subLexer(2, lexer.match(2) + 1),card),card);
                             }
 //------------------------------------------------------------------------------------
-            case right_parenthesis://理论上是不会遇到的
-                throw new Exception("))");
-            case lambda://理论上是不会遇到的
-                throw new Exception("\\\\");
-            case dot://理论上是不会遇到的
-                throw new Exception("...");
+
             default://普通的string
                 return new AST_Identifier(lexer.getValue(),card);
             }

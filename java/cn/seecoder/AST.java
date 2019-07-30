@@ -10,13 +10,24 @@ public abstract class AST {
     final static int basicSize=35;
     final static int wordSize =14;
 
+    final static int DEBRUIN=0;
+    final static int SIMPLIFY=1;
+    final static int MEDIUM=2;
+    final static int FULL=3;
+
+    final static int VERTICAL=0;
+    final static int OBLIQUE=1;
+
+
+    static int treeMode=GameSetting.getTreeMode();
+    static int printMode=GameSetting.getPrintMode();
 
 
     AST father;
     int left_distance;
     int right_distance;
     int width;
-    GameExploration card;////还有什么别的方法呢
+    GameFreelyExplore card;////还有什么别的方法呢
     JButton button=new JButton();//还有什么别的方法呢
 
 
@@ -146,7 +157,7 @@ public abstract class AST {
 
     private int print_lines(ArrayList<AST> ast_list ,int y,boolean enable){
 
-        final int line_height=20,button_height=20;//每行高度40，20用来画线，20用来放按钮
+        final int line_height=25,button_height=30;//每行高度=用来画线高度+用来放按钮高度
         final int height=line_height+button_height;
 
         JPanel panel=new JPanel();
@@ -186,10 +197,10 @@ public abstract class AST {
                     if(ast instanceof AST_Identifier && x2>x1 && ast.father instanceof AST_Abstraction){
                         color=Color.RED.brighter();
                     }
-                    if(true){
+                    if(treeMode==OBLIQUE){
                         panel.add(new Line(x1,y1,x2,y2,color));//斜模式
                     }
-                    else {
+                    else if(treeMode==VERTICAL){
                         panel.add(new Line(x2,y2,x2,y1/2,Color.black));//看你想根部那条是什么色
                         panel.add(new Line(x1,y1,x1,y1/2,color));
                         panel.add(new Line(x1,y1/2,x2,y1/2,color));

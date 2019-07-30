@@ -43,7 +43,7 @@ abstract class Function {
 
     }
 
-    static AST FunctionString_to_AST(String source, GameExploration card, AST father){
+    static AST FunctionString_to_AST(String source, GameFreelyExplore card, AST father){
         AST ast=null;
         for(int i=key_value.size()-2;i>=0;i-=2){
             if(source.equals(key_value.get(i))){
@@ -57,7 +57,7 @@ abstract class Function {
         return ast;
     }
 
-    static AST_Identifier AST_to_FunctionIdentify(AST oldAST,String FunctionName,GameExploration card, AST father){
+    static AST_Identifier AST_to_FunctionIdentify(AST oldAST, String FunctionName, GameFreelyExplore card, AST father){
 
         for(int i=key_value.size()-2;i>=0;i-=2){
             if(FunctionName.equalsIgnoreCase(key_value.get(i))){//???
@@ -65,21 +65,13 @@ abstract class Function {
                 Parser parser = new Parser(lexer);
                 AST temp=parser.parse(null);
                 if(temp.toString(0).equals(oldAST.toString(0))){
-                    AST_Identifier identifier=new AST_Identifier(key_value.get(i),card);
-                    //identifier.father=father;
-                    return identifier;
+                    return new AST_Identifier(key_value.get(i),card);
                 }
             }
         }
         return null;
     }
 
-    static String replace(String source){
-        for(int i= key_value.size()-2;i>=0;i-=2){
-            source=source.replace(key_value.get(i),key_value.get(i+1));
-        }
-        return source;
-    }
 
     static void read(String function_place){
         try {
@@ -202,6 +194,19 @@ abstract class Function {
         }
     }
 
+    static String DictionaryToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=0;i<key_value.size();i+=2){
+            stringBuilder.append('\n');
+            stringBuilder.append(Integer.valueOf(i/2).toString());
+            stringBuilder.append(":\t");
+            stringBuilder.append(key_value.get(i) );
+            stringBuilder.append(print_space(21-key_value.get(i).length()));
+            stringBuilder.append(key_value.get(i+1));
+        }
+        return stringBuilder.toString();
+    }
+
     static private String print_space(int len){
         StringBuilder res=new StringBuilder();
         for(int i=0;i<len;i++){
@@ -211,7 +216,7 @@ abstract class Function {
     }
 
 
-    private static ArrayList<String> init_key_value= new ArrayList<>(
+    private static ArrayList<String> init_key_value= new ArrayList<>(//你要是想改这个，改完记得FUNC+INIT,才能将其应用
             Arrays.asList(
                     "ZERO", "(\\f.(\\x.x))",
                     "ONE", "(\\f.(\\x.(f x)))",
@@ -232,7 +237,7 @@ abstract class Function {
                     "MULT", "(\\m.(\\n.(\\f.(m(n f)))))",
                     "POW", "(\\b.(\\e.(e b)))",
                     "PRED", "(\\n.(\\f.(\\x.(((n(\\g.(\\h.(h(g f)))))(\\u.x))(\\v.v)))))",
-                    "SUB", "(\\m.(\\n.((n  PRED)m)))",
+                    "SUB", "(\\m.(\\n.((n PRED)m)))",
                     "TRUE", "(\\u.(\\v.u))",
                     "FALSE", "(\\u.(\\v.v))",
                     "AND", "(\\p.(\\q.((p q)p)))",
@@ -242,13 +247,10 @@ abstract class Function {
                     "ISZERO", "(\\h.((h(\\t.FALSE))TRUE))",
                     "LEQ", "(\\m.(\\n.(ISZERO((SUB m)n))))",
                     "EQ", "(\\m.(\\n.((AND((LEQ m)n))((LEQ n)m))))",
-                    "LEQ", "(\\m.(\\n.(ISZERO((SUB m)n))))",
-                    "FACT1","(\\f.(\\n.((((n (\\t.(\\u.(\\v.v)))) (\\u.(\\v.u))) (\\f.(\\x.(f x)))) (\\b.(n (((f f) (\\f.(\\x.(((n (\\g.(\\h.(h (g f))))) (\\u.x)) (\\v.v))))) b))))))",
                     "FACT", "(FACT1 FACT1)",
                     "FACT1", "(\\f.(\\n.(((ISZERO n)ONE)((MULT n)((f f)(PRED n))))))",
-                    "YYY","(\\g.((\\x.g(x x))(\\x.g(x x))))",
-                    "FACT2","(\\f.(\\n.((((n (\\t.(\\u.(\\v.v)))) (\\u.(\\v.u))) (\\f.(\\x.(f x)))) (\\b.(n ((f (\\f.(\\x.(((n (\\g.(\\h.(h (g f))))) (\\u.x)) (\\v.v))))) b))))))",
-                    "FACTY","YYY FACT2",
+                    "Y","(\\g.((\\x.g(x x))(\\x.g(x x))))",
+                    "FACTY","(Y FACT2)",
                     "FACT2","(\\f.(\\n.(((ISZERO n)ONE)((MULT n)(f(PRED n))))))",
                     "MAX", "(\\x.(\\y.(((IF((LEQ x)y))y)x)))",
                     "MIN", "(\\x.(\\y.(((IF((LEQ x)y))x)y)))",
@@ -257,7 +259,8 @@ abstract class Function {
                     "CONS", "(\\x.(\\y.(\\f.((f x)y))))",
                     "NULL", "(\\p.(p(\\x.(\\y.FALSE))))",
                     "NIL", "(\\x.TRUE)",
-                    "LENGTH","(YYY(\\g.\\c.\\x.NULL x c (g (SUCC c)(CDR x)))ZERO)"
+                    "LENGTH1","(\\g.\\c.\\x.NULL x c (g (SUCC c)(CDR x)))",
+                    "LENGTH","(Y LENGTH1 ZERO)"
 
                     ));
 

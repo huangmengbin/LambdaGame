@@ -9,32 +9,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Global.to_seecoder =false;
 
-        String mode_file_place="mode";
         String function_place="function";
-
-        int mode;
-        int print_mode;
-
-
-        try {
-            File file=new File(mode_file_place);
-            Scanner file_inner=new Scanner(file);
-            mode=file_inner.nextInt();
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("尝试读取mode文件时发生错误\n已恢复至默认模式");
-            mode=6;
-        }//其实这个最好写成 Setting 的成员函数
-
-        print_mode =  mode     & 3;
 
         Function.read(function_place);
 //-----------------------------------------分割线------------------------------
 
 
-        new GameStart();
+        new GameStartNewGame();
 
 
 
@@ -58,32 +40,28 @@ public class Main {
 
                 source = in.nextLine().trim();
 
-                if (source.equalsIgnoreCase("set")) {
-                    mode = Setting.set(mode, mode_file_place);
-                    print_mode = mode & 3;
-                } else if (source.equalsIgnoreCase("function") || source.equalsIgnoreCase("func")) {
+                if (source.equalsIgnoreCase("function") || source.equalsIgnoreCase("func")) {
                     Function.func(function_place);
                 } else if (source.equalsIgnoreCase("help")) {
                     System.out.println(Global.help);
-                } else if (source.equalsIgnoreCase("tip") || source.equalsIgnoreCase("tips")) {
-                    Global.print_tip();
-                } else if (source.equalsIgnoreCase("quit") || source.equalsIgnoreCase("out")) {
+                }  else if (source.equalsIgnoreCase("quit") || source.equalsIgnoreCase("out")) {
                     break;
-                } else if(source.equalsIgnoreCase("reset")){
-                    for(GamesChoosing.SetGame setGame: GamesChoosing.gameList){
-                        try {
+                } else if(source.equals("DELETE-GAME")){//重置
+                    try {
+                        for (GamesChoosing.SetGame setGame : GamesChoosing.gameList) {
                             FileWriter writer = new FileWriter(setGame.source);
                             writer.write("999999999");
                             writer.close();
                         }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
+                        System.out.println("Done.");
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
                     }
                 } else if (source.isEmpty()) {
                     continue;
                 } else {
-
+                    System.out.println("unrecognized");
                 }
 
             }catch (Exception e){

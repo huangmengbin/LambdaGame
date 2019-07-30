@@ -43,7 +43,7 @@ public class AST_Identifier extends AST {
                 if(father instanceof AST_Abstraction
                 &&((AST_Abstraction) father).param==AST_Identifier.this) {
                     try {
-                        String newName = JOptionPane.showInputDialog(null, "请输入新的变量名", "a规约", 1).trim();
+                        String newName = JOptionPane.showInputDialog(null, "请输入新的变量名", "a变换", JOptionPane.PLAIN_MESSAGE).trim();
                         CheckLegal.check_IdentifyName(newName);
                         if (!isFunction(newName) && !newName.equals(name)) {
                             ((AST_Abstraction) father).body.a_change(name, newName);
@@ -59,7 +59,7 @@ public class AST_Identifier extends AST {
         }
     }
 
-    public AST_Identifier(String name, GameExploration cards){
+    public AST_Identifier(String name, GameFreelyExplore cards){
         setName(name);
         this.card =cards;
         button.addActionListener(new TreeListener());

@@ -1,25 +1,29 @@
 package cn.seecoder;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Scanner;
 
-class GameAdventure extends GameExploration {
+class GameAdventure extends GameFreelyExplore {
 
     private String source;
     private String destination;
     private int twoStar;
     private int threeStar;
+    GamesChoosing gamesChoosing;
 
-    GameAdventure(String source, JPanel cards, int twoStar, int threeStar,String destination){
+    GameAdventure(String source, JPanel cards, int twoStar, int threeStar,String destination,GamesChoosing gamesChoosing){
         super(cards);
 
         this.source=source;
         this.twoStar=twoStar;
         this.threeStar=threeStar;
         this.destination=destination;
+        this.gamesChoosing=gamesChoosing;
+        returnButton.addActionListener(new Ret());
 
         lexer=new Lexer(source);//要不要replace
         parser=new Parser(lexer);
@@ -33,7 +37,7 @@ class GameAdventure extends GameExploration {
 
         JButton button=new JButton("目的 ： "+destination);
         button.setEnabled(false);
-        button.setBounds(480,0,350,28);
+        button.setBounds(780,3,350,24);
         panel.add(button);
 
 
@@ -45,7 +49,7 @@ class GameAdventure extends GameExploration {
 
     void updateMessage() {
         super.updateMessage();
-        if(abstraction.body.toString(1).equals(destination)){//通关了
+        if(abstraction.body.toString(1).equals(destination)){//通关了,无需abstraction.body instanceof AST_Identifier &&
 
             passSuccessfully=true;
             checkHistory(abstraction.body,false);
@@ -58,8 +62,6 @@ class GameAdventure extends GameExploration {
                 File file=new File(source);
                 Scanner in =new Scanner(file);
                 history=in.nextInt();
-
-
 
                 if(step<history){//更新历史纪录
                     newRecordOrNot="新记录  ";
@@ -93,17 +95,8 @@ class GameAdventure extends GameExploration {
             if(chooseMessage==0){
                 inputSure();
             }
-            else if(chooseMessage==1) {
-                panel.removeAll();
-                cards.removeAll();
-                GameWelcome welcome = new GameWelcome(cards);
-                cards.add(welcome.panel);
-                GamesChoosing chooseGames = new GamesChoosing(cards);
-                cards.add(chooseGames.panel);
-                CardLayout cl = (CardLayout) (cards.getLayout());
-                cl.last(cards);
-
-                cards.updateUI();
+            else if(chooseMessage==1) {//返回
+                ret();
             }
             else if(chooseMessage==2){
                 printMessage();
