@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,20 +50,9 @@ class AST_Abstraction extends AST {
             case FULL:
                 return "(\\"+param.toString(mode)+"."+body.toString(mode)+")";//完完整整的括号
             default:
-                this.change_to_seecoder(new HashMap<>());
+                this.change_to_DeBruin(new HashMap<>());
                 return this.toString0();
         }
-    }
-
-    public Lexer toLexer(){
-        ArrayList<String>arrayList=new ArrayList<>();
-        arrayList.add("\\");
-        arrayList.add(param.getName());
-        arrayList.add(".");
-        Lexer lexer=new Lexer(arrayList);
-        lexer.connect(body.toLexer());
-        lexer.add_a_parenthesis();
-        return lexer;
     }
 
 
@@ -72,18 +60,18 @@ class AST_Abstraction extends AST {
         return new AST_Abstraction(param.clone(),body.clone(), card);
     }
 
-    public void change_to_seecoder(Map<String,Integer> map){
+    void change_to_DeBruin(Map<String,Integer> map){
         Map<String,Integer>map1=new HashMap<>();
         for (String key :map.keySet()) {
             map1.put(key,map.get(key)+1);
         }
         map1.put(param.getName(),0);
-        body.change_to_seecoder(map1);
+        body.change_to_DeBruin(map1);
     }
 
     //以下为规约---------------------------------
 
-    public AST find_and_B_change(Bool have_changed){
+    AST find_and_B_change(Bool have_changed){
         body=body.find_and_B_change(have_changed);
         return this;
     }

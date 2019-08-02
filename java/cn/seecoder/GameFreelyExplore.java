@@ -12,7 +12,7 @@ class GameFreelyExplore {
 
     Lexer lexer;
     Parser parser;
-    AST_Abstraction abstraction;
+    AST_RootSentry ast;
     private int height;
 
     JPanel cards;
@@ -104,24 +104,24 @@ class GameFreelyExplore {
 
         try {
             step++;
-            abstraction.body.calculate_node_distance();
+            ast.calculate_node_distance();
 
 
-            String absString = abstraction.body.toString(AST.printMode);
+            String astString = ast.toString(AST.printMode);
 
-            JButton historyButton = new JButton(step + ". \t" + absString);//括号模式
+            JButton historyButton = new JButton(step + ". \t" + astString);//括号模式
             historyButton.setFont(new Font("黑体", Font.BOLD, 15));
-            historyButton.addActionListener(new History(absString));//括号模式
+            historyButton.addActionListener(new History(astString));//括号模式
             outputPanel.add(historyButton);
             buttonArrayList.add(historyButton);
 
             //输出框自动滚到最底部
             outputScrollpane.getViewport().setViewPosition(new Point(0, outputScrollpane.getVerticalScrollBar().getMaximum()));//输出框自动滚到最底部
 
-            overTextArea.setText(overTextArea.getText() + step + ".\t" + absString + "\n");//括号模式
+            overTextArea.setText(overTextArea.getText() + step + ".\t" + astString + "\n");//括号模式
             verticalPanel.removeAll();//清除旧的，每次都是新的vertical
-            height = abstraction.body.print_lines();
-            treePanel.setPreferredSize(new Dimension(abstraction.body.width + abstraction.body.left_distance + abstraction.body.right_distance + 10, height + 10));
+            height = ast.print_lines();
+            treePanel.setPreferredSize(new Dimension(ast.width + ast.left_distance + ast.right_distance + 10, height + 10));
             panel.updateUI();
         }catch (Exception e){
             e.printStackTrace();
@@ -157,14 +157,13 @@ class GameFreelyExplore {
     void inputSure(){
         step=0;///////////////////////////////////////////////////
         passSuccessfully=false;
-        String source= inputTextField.getText().trim();
+        String source = inputTextField.getText().trim();
         try {
             CheckLegal.check_source_string(source);
             lexer = new Lexer(source);//////////////////////////////////////////
             parser = new Parser(lexer);
-            AST_Identifier param = new AST_Identifier("abstraction", GameFreelyExplore.this);
-            AST body = parser.parse(GameFreelyExplore.this);
-            abstraction = new AST_Abstraction(param, body, GameFreelyExplore.this);
+            AST temp = parser.parse(GameFreelyExplore.this);
+            ast=new AST_RootSentry(temp,GameFreelyExplore.this);
             outputPanel.removeAll();
             overTextArea.setText("");//清空
             updateMessage();
@@ -177,8 +176,8 @@ class GameFreelyExplore {
     class NextOne implements ActionListener{//下一步键
         public void actionPerformed(ActionEvent e) {
             Bool bool=new Bool(false);
-            if(abstraction!=null) {
-                abstraction = (AST_Abstraction) abstraction.find_and_B_change(bool);
+            if(ast!=null) {
+                ast = (AST_RootSentry) ast.find_and_B_change(bool);
             }
             if(bool.isTrue()) {
                 updateMessage();
@@ -216,10 +215,10 @@ class GameFreelyExplore {
             parser=new Parser(lexer);
             AST history_ast=parser.parse(GameFreelyExplore.this);
             if(e.getSource()==buttonArrayList.get(buttonArrayList.size()-1)&& !passSuccessfully){
-                checkHistory(abstraction.body,true);
+                checkHistory(ast,true);
             }
             else {
-                checkHistory(history_ast,false);
+                checkHistory(new AST_RootSentry(history_ast,GameFreelyExplore.this),false);
             }
         }
     }

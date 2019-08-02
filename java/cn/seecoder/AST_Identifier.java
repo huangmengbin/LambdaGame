@@ -29,6 +29,7 @@ public class AST_Identifier extends AST {
     private boolean isFunction(String name){
         return name.charAt(0)>='A' && name.charAt(0)<='Z';//首字母大写 视为抽象函数
     }
+
     class TreeListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e){
@@ -59,13 +60,13 @@ public class AST_Identifier extends AST {
         }
     }
 
-    public AST_Identifier(String name, GameFreelyExplore cards){
+    AST_Identifier(String name, GameFreelyExplore cards){
         setName(name);
         this.card =cards;
         button.addActionListener(new TreeListener());
     }
 
-    public AST find_and_B_change(Bool have_changed){return this;}
+    AST find_and_B_change(Bool have_changed){return this;}
 
     protected void a_change(String oldString , String newString){
         if(name.equals(oldString)){
@@ -78,7 +79,7 @@ public class AST_Identifier extends AST {
     }
 
     public String toString(int mode){
-        if(mode==0){
+        if(mode==DEBRUIN){
             return toString0();
         }
         else {
@@ -86,13 +87,9 @@ public class AST_Identifier extends AST {
         }
     }
 
-    public Lexer toLexer(){
-        ArrayList<String>arrayList=new ArrayList<>();
-        arrayList.add(name);
-        return new Lexer(arrayList);
-    }
 
-    public void change_to_seecoder(Map<String,Integer> map){
+
+    void change_to_DeBruin(Map<String,Integer> map){
         if (!map.containsKey(name)){
             value="free";//大概是这个意思吧
         }

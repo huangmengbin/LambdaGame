@@ -20,7 +20,6 @@ public class Parser {
 
     AST parse(GameFreelyExplore card){//来构建树了
         return term(lexer,card);
-
     }
 
     private AST term(Lexer lexer, GameFreelyExplore card){

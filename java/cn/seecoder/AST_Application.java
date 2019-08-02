@@ -60,34 +60,27 @@ class AST_Application extends AST{
                         temp3.append(")");
                     }
                 return "("+ lhs.toString(mode)+" "+ temp3.toString()+")";
-            case 3:
+            case FULL:
                 return "("+ lhs.toString(mode)+" "+ rhs.toString(mode)+")";
             default:
-                this.change_to_seecoder(new HashMap<>());
+                this.change_to_DeBruin(new HashMap<>());
                 return this.toString0();
         }
     }
 
-    public Lexer toLexer(){
-        Lexer a= lhs.toLexer();
-        Lexer b= rhs.toLexer();
-        a.connect(b);
-        a.add_a_parenthesis();
-        return a;
-    }
 
     protected AST clone(){
         return new AST_Application(lhs.clone(), rhs.clone(), card);
     }
 
-    public void change_to_seecoder(Map<String, Integer> map){
-        lhs.change_to_seecoder(map);
-        rhs.change_to_seecoder(map);
+    void change_to_DeBruin(Map<String, Integer> map){
+        lhs.change_to_DeBruin(map);
+        rhs.change_to_DeBruin(map);
     }
 
     //以下为规约------------------------------------------
 
-    public AST find_and_B_change(Bool have_changed){
+    AST find_and_B_change(Bool have_changed){
 
         if(!have_changed.isTrue() && lhs instanceof AST_Abstraction){
             have_changed.setValue(true);//找到了hhh

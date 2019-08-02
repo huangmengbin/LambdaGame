@@ -27,9 +27,8 @@ class GameAdventure extends GameFreelyExplore {
 
         lexer=new Lexer(source);//要不要replace
         parser=new Parser(lexer);
-        AST_Identifier param=new AST_Identifier("abstraction",this);
-        AST body=parser.parse(this);
-        abstraction =new AST_Abstraction(param,body,this);
+        AST temp = parser.parse(this);
+        ast=new AST_RootSentry(temp,this);
         overTextArea.setText("");//清空
 
         inputButton.setText("重玩");
@@ -49,10 +48,10 @@ class GameAdventure extends GameFreelyExplore {
 
     void updateMessage() {
         super.updateMessage();
-        if(abstraction.body.toString(1).equals(destination)){//通关了,无需abstraction.body instanceof AST_Identifier &&
+        if(ast.toString(1).equals(destination)){//通关了,无需abstraction.body instanceof AST_Identifier &&
 
             passSuccessfully=true;
-            checkHistory(abstraction.body,false);
+            checkHistory(ast,false);
             int history;
 
             String starMessage="？星通关";

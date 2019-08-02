@@ -19,7 +19,7 @@ public abstract class AST {
     final static int OBLIQUE=1;
 
 
-    static int treeMode=GameSetting.getTreeMode();
+    static int treeMode =GameSetting.getTreeMode();
     static int printMode=GameSetting.getPrintMode();
 
 
@@ -32,6 +32,7 @@ public abstract class AST {
 
 
     static void replaceAST(AST oldAST,AST newAST){
+
         if(oldAST.father==null){
             System.out.println("replaceAST : father is null");
         }
@@ -56,6 +57,10 @@ public abstract class AST {
             }
             newAST.father=oldAST.father;
         }
+        else if(oldAST.father instanceof AST_RootSentry){
+            ((AST_RootSentry) oldAST.father).ast=newAST;
+            newAST.father=oldAST.father;
+        }
     }
 
     public abstract String toString0();
@@ -66,10 +71,8 @@ public abstract class AST {
 
     protected abstract AST clone();//不知怎么的突然想写这个，感觉比之前的快多了
 
-    public abstract AST find_and_B_change(Bool have_changed);
-
-    public abstract Lexer toLexer();
-
+    abstract AST find_and_B_change(Bool have_changed);
+    
     protected abstract void a_change (String oldString , String newString);
 
     void B_replace_1(AST ast, String label){
@@ -110,14 +113,17 @@ public abstract class AST {
                 }
             }
         }
-        else if(this instanceof AST_Identifier){//3
+        else if(this instanceof AST_RootSentry){//3
+            System.out.println("bug of root_sentry replace");
+        }
+        else if(this instanceof AST_Identifier){//4
             System.out.println("bug of identify replace");
            //卧槽，好烦啊
         }
 
     }
 
-    public abstract void change_to_seecoder(Map<String,Integer> map);
+    abstract void change_to_DeBruin(Map<String,Integer> map);
 
 
 
@@ -151,11 +157,19 @@ public abstract class AST {
 
     int print_lines(boolean enable){
         ArrayList<AST> ast_list=new ArrayList<>();
-        ast_list.add(this);
-        return print_lines(ast_list,0,enable);
+        if(this instanceof AST_RootSentry){
+            ast_list.add(((AST_RootSentry) this).ast);
+        }
+        else {
+            ast_list.add(this);
+        }
+        return print_lines(ast_list,0,enable,this.card);
     }
 
-    private int print_lines(ArrayList<AST> ast_list ,int y,boolean enable){
+    private static int print_lines(ArrayList<AST> ast_list ,int y,boolean enable,GameFreelyExplore card){
+
+
+
 
         final int line_height=25,button_height=30;//每行高度=用来画线高度+用来放按钮高度
         final int height=line_height+button_height;
@@ -216,7 +230,7 @@ public abstract class AST {
 
 
             if(ast.father==null){//检测一下树的指针是否都正确了
-                ast.button.setEnabled(false);
+                ast.button.setBackground(Color.blue);
             }////////////////////////////////////////妈的
             if(ast.father instanceof AST_Application){
                 if(((AST_Application) ast.father).lhs!=ast && ((AST_Application) ast.father).rhs!=ast){
@@ -231,7 +245,7 @@ public abstract class AST {
 
         }
 
-        this.card.verticalPanel.add(panel);
+        card.verticalPanel.add(panel);
 
         boolean to_continue=false;
         ArrayList<AST> next_asts=new ArrayList<>();
@@ -258,7 +272,7 @@ public abstract class AST {
         }
 
         if(to_continue){
-            return print_lines(next_asts,y,enable);
+            return print_lines(next_asts,y,enable,card);
         }
         else {
             return y;
