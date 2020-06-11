@@ -50,17 +50,7 @@ public class Main {
                 }  else if (source.equalsIgnoreCase("quit") || source.equalsIgnoreCase("out")) {
                     break;
                 } else if(source.equals("DELETE-GAME")){//重置
-                    try {
-                        for (GamesChoosing.SetGame setGame : GamesChoosing.gameList) {
-                            FileWriter writer = new FileWriter("file/"+setGame.source);
-                            writer.write(GamesChoosing.MAX_VALUE);
-                            writer.close();
-                        }
-                        System.out.println("Done.");
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    GamesChoosing.deleteGame();
                 } else if (source.isEmpty()) {
                     continue;
                 } else {

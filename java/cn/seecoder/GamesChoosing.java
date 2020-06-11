@@ -214,11 +214,18 @@ public class GamesChoosing {
                 write();
             }
         }
+        static void deleteGame(){
+            hashMap.clear();
+            write();
+        }
     }
     static int getHistory(String s){
         return History.getHistory(s);
     }
     static void setHistory(String s,int step){
         History.setHistory(s,step);
+    }
+    static void deleteGame(){
+        History.deleteGame();
     }
 }
