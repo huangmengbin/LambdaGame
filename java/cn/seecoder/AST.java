@@ -1,5 +1,6 @@
 package cn.seecoder;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -7,8 +8,8 @@ import java.lang.*;
 
 public abstract class AST {
 
-    final static int basicSize=35;
-    final static int wordSize =14;
+    final static int basicSize=35*1920/Global.ScreenWidth;
+    final static int wordSize =16;
 
     final static int DEBRUIN=0;
     final static int SIMPLIFY=1;
@@ -30,6 +31,9 @@ public abstract class AST {
     GameFreelyExplore card;////还有什么别的方法呢
     JButton button=new JButton();//还有什么别的方法呢
 
+    AST(){
+        button.setFont(new Font("黑体",Font.BOLD,16*Global.ScreenWidth/1920));
+    }
 
     static void replaceAST(AST oldAST,AST newAST){
 
@@ -176,7 +180,7 @@ public abstract class AST {
 
         JPanel panel=new JPanel();
         panel.setLayout(null);
-        panel.setBounds(4,y,99999999,height);//离最左距离为4
+        panel.setBounds(4,y*Global.ScreenHeight/1080,999999999,height*Global.ScreenHeight/1080);//离最左距离为4
         y+=height;
 
         int x=0;
@@ -186,7 +190,7 @@ public abstract class AST {
 
             x+=ast.left_distance;
 
-            ast.button.setBounds(x,line_height,ast.width,button_height);
+            ast.button.setBounds(x*Global.ScreenWidth/1920,line_height*Global.ScreenHeight/1080,ast.width*Global.ScreenWidth/1920,button_height*Global.ScreenHeight/1080);
             ast.button.setEnabled(enable);
 
             if(!is_space(ast)) {//空白无需处理
@@ -212,12 +216,12 @@ public abstract class AST {
                         color=Color.RED.brighter();
                     }
                     if(treeMode==OBLIQUE){
-                        panel.add(new Line(x1,y1,x2,y2,color));//斜模式
+                        panel.add(new Line(x1*Global.ScreenWidth/1920,y1*Global.ScreenHeight/1080,x2*Global.ScreenWidth/1920,y2*Global.ScreenHeight/1080,color));//斜模式
                     }
                     else if(treeMode==VERTICAL){
-                        panel.add(new Line(x2,y2,x2,y1/2,Color.black));//看你想根部那条是什么色
-                        panel.add(new Line(x1,y1,x1,y1/2,color));
-                        panel.add(new Line(x1,y1/2,x2,y1/2,color));
+                        panel.add(new Line(x2*Global.ScreenWidth/1920,y2*Global.ScreenHeight/1080,x2*Global.ScreenWidth/1920,y1/2*Global.ScreenHeight/1080,Color.black));//看你想根部那条是什么色
+                        panel.add(new Line(x1*Global.ScreenWidth/1920,y1*Global.ScreenHeight/1080,x1*Global.ScreenWidth/1920,y1/2*Global.ScreenHeight/1080,color));
+                        panel.add(new Line(x1*Global.ScreenWidth/1920,y1/2*Global.ScreenHeight/1080,x2*Global.ScreenWidth/1920,y1/2*Global.ScreenHeight/1080,color));
                     }
 
                 }

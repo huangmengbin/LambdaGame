@@ -1,14 +1,14 @@
 package cn.seecoder;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.*;
 
 class GameFreelyExplore {
 
-    int step=0;
+    int step=-1;
 
     Lexer lexer;
     Parser parser;
@@ -22,7 +22,7 @@ class GameFreelyExplore {
     JButton inputButton=new JButton("绘制");
     private JButton nextStepButton =new JButton("下一步");
     private JButton printButton=new JButton("打印");
-    JButton returnButton =new JButton("返回");
+    private JButton returnButton =new JButton("返回");
 
     private JPanel outputPanel =new JPanel();
     private JScrollPane outputScrollpane=new JScrollPane();
@@ -47,24 +47,23 @@ class GameFreelyExplore {
         panel.setLayout(null);//还不如自己手动布局。。。
 
         returnButton.addActionListener(new Ret());
-        returnButton.setBounds(0,5,60,30);
+        returnButton.setBounds(1,5,60*Global.ScreenWidth/1920,30*Global.ScreenHeight/1080);
         panel.add(returnButton);
 
-        inputBox.setBounds(167,30,1650,40);
-        inputTextField =new JTextField(67);
+        inputBox.setBounds(167*Global.ScreenWidth/1920,30*Global.ScreenHeight/1080,1650*Global.ScreenWidth/1920,40*Global.ScreenHeight/1080);
+        inputTextField =new JTextField(67*Global.ScreenWidth/1920);
         //inputTextField.setEditable(true);
-        inputTextField.setFont(new Font("宋体",Font.BOLD,20));
+        inputTextField.setFont(new Font("宋体",Font.BOLD,20*Global.ScreenWidth/1920));
         inputButton.addActionListener(new InputSure());
         nextStepButton.addActionListener(new NextOne());
         printButton.addActionListener(new Print());
         inputBox.add(inputTextField);
-        inputBox.add(Box.createHorizontalStrut(30));
+        inputBox.add(Box.createHorizontalStrut(30*Global.ScreenWidth/1920));
         inputBox.add(inputButton);
-        inputBox.add(Box.createHorizontalStrut(20));
+        inputBox.add(Box.createHorizontalStrut(20*Global.ScreenWidth/1920));
         inputBox.add(nextStepButton);
-        inputBox.add(Box.createHorizontalStrut(120));
+        inputBox.add(Box.createHorizontalStrut(160*Global.ScreenWidth/1920));
         inputBox.add(printButton);
-
 
 
         panel.add(inputBox);
@@ -73,7 +72,7 @@ class GameFreelyExplore {
         outputScrollpane.createHorizontalScrollBar();
         outputScrollpane.createVerticalScrollBar();
         outputScrollpane.setViewportView(outputPanel);
-        outputScrollpane.setBounds(30,75,1800,230);
+        outputScrollpane.setBounds(30*Global.ScreenWidth/1920,75*Global.ScreenHeight/1080,1800*Global.ScreenWidth/1920,230*Global.ScreenHeight/1080);
         panel.add(outputScrollpane);
 
         treePanel.setLayout(new BorderLayout());
@@ -83,7 +82,7 @@ class GameFreelyExplore {
         treeScrollPane.createHorizontalScrollBar();
         treeScrollPane.createVerticalScrollBar();
         treeScrollPane.setViewportView(treePanel);
-        treeScrollPane.setBounds(30,320,1800,660);
+        treeScrollPane.setBounds(30*Global.ScreenWidth/1920,320*Global.ScreenHeight/1080,1800*Global.ScreenWidth/1920,660*Global.ScreenHeight/1080);
         panel.add(treeScrollPane);
 
 
@@ -94,8 +93,6 @@ class GameFreelyExplore {
         overScrollpane.createVerticalScrollBar();
         overScrollpane.createHorizontalScrollBar();
         overPanel.add(overScrollpane);
-
-
     }
 
 
@@ -106,23 +103,23 @@ class GameFreelyExplore {
             step++;
             ast.calculate_node_distance();
 
-
             String astString = ast.toString(AST.printMode);
 
             JButton historyButton = new JButton(step + ". \t" + astString);//括号模式
-            historyButton.setFont(new Font("黑体", Font.BOLD, 15));
+            historyButton.setFont(new Font("黑体", Font.BOLD, 15*Global.ScreenHeight/1080));
             historyButton.addActionListener(new History(astString));//括号模式
             outputPanel.add(historyButton);
             buttonArrayList.add(historyButton);
 
             //输出框自动滚到最底部
-            outputScrollpane.getViewport().setViewPosition(new Point(0, outputScrollpane.getVerticalScrollBar().getMaximum()));//输出框自动滚到最底部
+            outputScrollpane.getViewport().setViewPosition(new Point(0, Integer.MAX_VALUE));//输出框自动滚到最底部
 
             overTextArea.setText(overTextArea.getText() + step + ".\t" + astString + "\n");//括号模式
             verticalPanel.removeAll();//清除旧的，每次都是新的vertical
             height = ast.print_lines();
-            treePanel.setPreferredSize(new Dimension(ast.width + ast.left_distance + ast.right_distance + 10, height + 10));
+            treePanel.setPreferredSize(new Dimension((ast.width + ast.left_distance + ast.right_distance + 10)*Global.ScreenWidth/1920, (height + 10)*Global.ScreenHeight/1080));
             panel.updateUI();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -132,21 +129,19 @@ class GameFreelyExplore {
         history_ast.calculate_node_distance();
         verticalPanel.removeAll();//清除旧的，每次都是新的vertical
         height=history_ast.print_lines(enable);
-        treePanel.setPreferredSize(new Dimension(history_ast.width +history_ast.left_distance+history_ast.right_distance+10,height+10));
+        treePanel.setPreferredSize(new Dimension((history_ast.width +history_ast.left_distance+history_ast.right_distance+10)*Global.ScreenWidth/1920,(height+10)*Global.ScreenHeight/1080));
         panel.updateUI();
     }
 
     void printMessage(){
         JFrame frame=new JFrame();
-        frame.setBounds(50,50,1800,800);
+        frame.setBounds(50*Global.ScreenWidth/1920,50*Global.ScreenHeight/1080,1800*Global.ScreenWidth/1920,800*Global.ScreenHeight/1080);
         frame.setVisible(true);
         frame.add(overScrollpane);
     }
 
     void ret(){
-        if(GameFreelyExplore.this instanceof GameAdventure){//
-            ((GameAdventure)GameFreelyExplore.this).gamesChoosing.updateMessage();///
-        }
+
         panel.removeAll();
         cards.remove(panel);
         CardLayout cl = (CardLayout) (cards.getLayout());
@@ -155,7 +150,7 @@ class GameFreelyExplore {
     }
 
     void inputSure(){
-        step=0;///////////////////////////////////////////////////
+        step=-1;///////////////////////////////////////////////////
         passSuccessfully=false;
         String source = inputTextField.getText().trim();
         try {

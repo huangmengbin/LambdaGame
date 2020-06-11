@@ -1,5 +1,6 @@
 package cn.seecoder;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,28 @@ class AST_Application extends AST{
             {
                 replaceAST(AST_Application.this,find_and_B_change(new Bool(false)));
                 card.updateMessage();
+            }
+            else{
+                AST_Identifier identifier = new AST_Identifier("5467",card);
+                int step1 = GameProved.provedReplace(AST_Application.this,identifier);
+                if(step1>0){
+                    card.step+=step1-1;
+                    replaceAST(AST_Application.this,identifier);
+                    card.updateMessage();
+                }
+                else if(step1 <= -2) {
+                    int confirm = JOptionPane.showConfirmDialog(null,"现在要证明它吗？","这个东西还没被证明",JOptionPane.YES_NO_OPTION);
+                    if(confirm==0){
+                        String source = ((AST_Identifier)lhs).getName()+" "+((AST_Identifier)rhs).getName();
+                        String destination = JOptionPane.showInputDialog(null,source+"  =>","欲证：",JOptionPane.PLAIN_MESSAGE);
+                        if(destination!=null && destination.length()>=1 && Character.isUpperCase(destination.charAt(0))){
+                            GameProving game = new GameProving(card.cards, source, destination,null);
+                            card.cards.add(game.panel);
+                            CardLayout cl = (CardLayout) (card.cards.getLayout());
+                            cl.last(card.cards);
+                        }
+                    }
+                }
             }
         }
     }

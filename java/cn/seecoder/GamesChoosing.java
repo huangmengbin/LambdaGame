@@ -1,18 +1,27 @@
 package cn.seecoder;
 
+
+import javafx.util.Pair;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
+
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
+
+
 public class GamesChoosing {
+
+    static final int MAX_VALUE = Integer.MAX_VALUE;
+    static final String HISTORY_FILE = "file/history";
     JPanel panel=new JPanel(null);
     JPanel cards;
-    JButton returnButton=new JButton("返回");
+    private JButton returnButton=new JButton("返回");
     private JPanel smallpanel;
 
     static class SetGame{
@@ -22,7 +31,7 @@ public class GamesChoosing {
         private String destination;
 
         SetGame(String source,int twoStar,int threeStar,String destination){
-            this.source=source;
+            this.source= source;
             this.twoStar=twoStar;
             this.threeStar=threeStar;
             this.destination=destination;
@@ -30,7 +39,7 @@ public class GamesChoosing {
     }
     static ArrayList<SetGame>gameList=new ArrayList<>();
     static {
-        gameList.add(new SetGame("SIXSEVEN",3,2,"67_NB"));//1
+        gameList.add(new SetGame("SIXSEVEN",3,1,"67_NB"));//1
         gameList.add(new SetGame("SUCC THREE",10,8,"FOUR"));//2
         gameList.add(new SetGame("PLUS ZERO ONE",10,8,"ONE"));//3
         gameList.add(new SetGame("PLUS TWO THREE",20,18,"FIVE"));//4
@@ -55,7 +64,7 @@ public class GamesChoosing {
         gameList.add(new SetGame("LEQ THREE TWO",45,40,"FALSE"));//
         gameList.add(new SetGame("LEQ TWO THREE",45,40,"TRUE"));//
         gameList.add(new SetGame("EQ ONE TWO",65,62,"FALSE"));//
-        gameList.add(new SetGame("EQ TWO ONE",65,62,"FALSE"));//
+        gameList.add(new SetGame("EQ TWO ONE",48,36,"FALSE"));//
         gameList.add(new SetGame("EQ ONE ONE",60,55,"TRUE"));//
         gameList.add(new SetGame("MIN ONE TWO",45,40,"ONE"));//
         gameList.add(new SetGame("MAX THREE FOUR",70,60,"FOUR"));//
@@ -77,55 +86,39 @@ public class GamesChoosing {
     }
 
     GamesChoosing(JPanel cards){
+        History.read();
 
         this.cards=cards;
-        returnButton.setBounds(0,5,60,30);
+        returnButton.setBounds(0,5,60*Global.ScreenWidth/1920,30*Global.ScreenHeight/1080);
         returnButton.addActionListener(new ret());
         panel.add(returnButton);
         smallpanel=new JPanel();
         JScrollPane jScrollPane=new JScrollPane(smallpanel);
         jScrollPane.createVerticalScrollBar();
         jScrollPane.createHorizontalScrollBar();
-        jScrollPane.setBounds(10,60,1880,900);
+        jScrollPane.setBounds(10*Global.ScreenWidth/1920,60*Global.ScreenHeight/1080,1880*Global.ScreenWidth/1920,900*Global.ScreenHeight/1080);
         panel.add(jScrollPane);
-        int number=gameList.size();
-        smallpanel.setLayout(new GridLayout(14,4,50,40));
+        smallpanel.setLayout(new GridLayout(14*Global.ScreenWidth/1920,4,50*Global.ScreenWidth/1920,40*Global.ScreenHeight/1080));
 
         updateMessage();
-
 
     }
 
     void updateMessage(){
         smallpanel.removeAll();
+
         int i=0;
         for(SetGame setGame:gameList) {
             i++;
 
-            int history=999999999;
-            try{
-                File file=new File(setGame.source);
-                Scanner in =new Scanner(file);
-                history=in.nextInt();
-            }
-            catch (Exception e){
-                try {
-                    e.printStackTrace();
-                    FileWriter writer = new FileWriter(setGame.source);
-                    writer.write(Integer.valueOf(history).toString());
-                    writer.close();
-                }
-                catch (Exception f){
-                    f.printStackTrace();
-                }
-            }
+            int history = History.getHistory(setGame.source);
 
             JButton button=new JButton();
             String message="";
-            if(history==999999999){
+            if(history==MAX_VALUE){
                 message="未通关";
             }
-            else if(history<999999999&&history>setGame.twoStar){
+            else if(history>setGame.twoStar){
                 message="一星通关";
             }
             else if(history<=setGame.twoStar&&history>setGame.threeStar){
@@ -136,14 +129,14 @@ public class GamesChoosing {
             }
 
             String historyString;
-            if(history!=999999999){
+            if(history!=MAX_VALUE){
                 historyString="历史记录:"+history+"步";
             }
             else {
                 historyString="\n";
             }
             button.setText("<html><center><br><br>"+i+". "+setGame.source+"</center><center>"+message+"</center><center>"+historyString+"<br><br></center></html>");
-            button.setFont(new Font(Font.SANS_SERIF,Font.BOLD,16));
+            button.setFont(new Font(Font.SANS_SERIF,Font.BOLD,16*Global.ScreenWidth/1920));
             button.addActionListener(new choose(setGame.source,setGame.twoStar,setGame.threeStar,setGame.destination));
             smallpanel.add(button);
         }
@@ -175,5 +168,57 @@ public class GamesChoosing {
             CardLayout cl=(CardLayout)(cards.getLayout());
             cl.last(cards);
         }
+    }
+
+    private static class History{
+        static HashMap<String,Integer> hashMap = new HashMap<>();
+        static void read() {
+            try  {
+                FileInputStream stream = new FileInputStream(HISTORY_FILE);
+                ObjectInputStream is = new ObjectInputStream(stream);
+                hashMap = (HashMap<String, Integer>) is.readObject();
+            }
+            catch (FileNotFoundException e){
+                File file = new File(HISTORY_FILE);
+                try {
+                    if(file.createNewFile()){
+                        write();
+                    }
+                }
+                catch (IOException e1){
+                    e1.printStackTrace();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        static void write(){
+            try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(HISTORY_FILE))) {
+                os.writeObject(hashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        static int getHistory(String s){
+            if(hashMap.get(s)==null){
+                return Integer.MAX_VALUE;
+            }
+            else {
+                return hashMap.get(s);
+            }
+        }
+        static void setHistory(String s,int step){
+            if(hashMap.get(s)==null||hashMap.get(s)>step){
+                hashMap.put(s,step);
+                write();
+            }
+        }
+    }
+    static int getHistory(String s){
+        return History.getHistory(s);
+    }
+    static void setHistory(String s,int step){
+        History.setHistory(s,step);
     }
 }

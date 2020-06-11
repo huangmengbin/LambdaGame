@@ -1,10 +1,9 @@
 package cn.seecoder;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AST_Identifier extends AST {
@@ -14,10 +13,13 @@ public class AST_Identifier extends AST {
     private String name; //名字
     private String value;//没什么用的东西
 
-    private void setName(String name){
+    void setName(String name){
         this.name=name;
-        if(isFunction(name)){
+        if(isFunction()){
             button.setBackground(Color.CYAN);
+        }
+        else {
+            button.setBackground(new Color(120,255,120));
         }
         button.setText(name);
     }
@@ -26,6 +28,9 @@ public class AST_Identifier extends AST {
     }
 
 
+    boolean isFunction(){
+        return name.charAt(0)>='A' && name.charAt(0)<='Z';//首字母大写 视为抽象函数
+    }
     private boolean isFunction(String name){
         return name.charAt(0)>='A' && name.charAt(0)<='Z';//首字母大写 视为抽象函数
     }
@@ -33,7 +38,7 @@ public class AST_Identifier extends AST {
     class TreeListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e){
-            if(isFunction(name)){//视为抽象函数,展开它
+            if(isFunction()){//视为抽象函数,展开它
                 AST ast=Function.FunctionString_to_AST(name,AST_Identifier.this.card,AST_Identifier.this.father);
                 if(ast!=null) {
                     replaceAST(AST_Identifier.this, ast);
@@ -94,7 +99,7 @@ public class AST_Identifier extends AST {
             value="free";//大概是这个意思吧
         }
         else {
-            value = Integer.valueOf(map.get(name)).toString();//所以要怎么改？？
+            value = map.get(name).toString();
         }
     }
 

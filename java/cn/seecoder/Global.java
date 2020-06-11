@@ -1,10 +1,12 @@
 package cn.seecoder;
 
-import java.util.Scanner;
+import java.awt.*;
 
 class Global {
-    //一些没什么用的东西
 
+
+    static final int ScreenWidth = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    static final int ScreenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
 
     static final String help= "\n" +
@@ -14,9 +16,9 @@ class Global {
             "   change：修改指定位置的函数\n"+
             "   delete：删除某个函数\n" +
             "   initial：还原成默认\n" +
-            "   check：查看\n" +
+            "   check：查看\n\n" +
             "DELETE-GAME：\n" +
-            "删除存档！\n" +
+            "    删除存档！\n" +
             "\n" +
             "\n";
 

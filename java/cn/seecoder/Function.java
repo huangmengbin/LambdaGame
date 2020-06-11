@@ -2,6 +2,7 @@ package cn.seecoder;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.lang.*;
 
@@ -45,14 +46,32 @@ abstract class Function {
 
     static AST FunctionString_to_AST(String source, GameFreelyExplore card, AST father){
         AST ast=null;
+        Lexer lexer = null;
         for(int i=key_value.size()-2;i>=0;i-=2){
             if(source.equals(key_value.get(i))){
-                Lexer lexer=new Lexer(key_value.get(i+1));
+                lexer=new Lexer(key_value.get(i+1));
                 Parser parser=new Parser(lexer);
                 ast=parser.parse(card);
-                //ast.father=father;
                 break;
             }
+        }
+
+        if(lexer==null && source.startsWith("INT")){
+            StringBuilder sb1=new StringBuilder();
+            StringBuilder sb2=new StringBuilder();
+            try{
+                int number=Integer.parseInt(source.substring(3));
+                for(int ii=0;ii<number;++ii){
+                    sb1.append("(f");
+                    sb2.append(')');
+                }
+            }
+            catch (NumberFormatException e){
+                return null;
+            }
+            lexer=new Lexer("(\\f.(\\x."+sb1.toString()+" x))"+sb2.toString());
+            Parser parser=new Parser(lexer);
+            ast=parser.parse(card);
         }
         return ast;
     }
@@ -69,6 +88,27 @@ abstract class Function {
                 }
             }
         }
+
+        if(FunctionName.startsWith("INT")){
+            StringBuilder sb1=new StringBuilder();
+            StringBuilder sb2=new StringBuilder();
+            try{
+                int number=Integer.parseInt(FunctionName.substring(3));
+                for(int ii=0;ii<number;++ii){
+                    sb1.append("(f");
+                    sb2.append(')');
+                }
+            }
+            catch (NumberFormatException e){
+                return null;
+            }
+            Lexer lexer=new Lexer("(\\f.(\\x."+sb1.toString()+" x))"+sb2.toString());
+            Parser parser=new Parser(lexer);
+            AST temp=parser.parse(null);
+            if(temp.toString(0).equals(oldAST.toString(0))){
+                return new AST_Identifier(FunctionName,card);
+            }
+        }
         return null;
     }
 
@@ -82,6 +122,7 @@ abstract class Function {
         }catch (Exception e){
             e.printStackTrace();
             key_value=init_key_value;
+            write(function_place);
             System.out.println("尝试读取function文件时发生错误\n已恢复至默认模式");
         }
     }
@@ -97,7 +138,7 @@ abstract class Function {
             writer.write(result.toString());
             System.out.println("Function file saved！");
             writer.close();
-        }catch (Exception e){
+        }catch (IOException e){
             e.printStackTrace();
             System.out.println("尝试写function文件失败");
         }
@@ -216,7 +257,7 @@ abstract class Function {
     }
 
 
-    private static ArrayList<String> init_key_value= new ArrayList<>(//你要是想改这个，改完记得FUNC+INIT,才能将其应用
+    private static ArrayList<String> init_key_value= new ArrayList<>(//要是想改这个，改完记得FUNC+INIT,才能将其应用
             Arrays.asList(
                     "ZERO", "(\\f.(\\x.x))",
                     "ONE", "(\\f.(\\x.(f x)))",

@@ -6,12 +6,15 @@ import java.util.*;
 
 public class Main {
 
+    private final static String function_place="file/function";
 
     public static void main(String[] args) {
 
-
-        String function_place="function";
-
+        System.out.print("\n输入 help 可查看帮助\n\n");
+        File filePath = new File("file");
+        if ( !filePath.exists()){//若此目录不存在，则创建之// 这个东西只能简历一级文件夹，两级是无法建立的。。。。。
+            boolean b = filePath.mkdir();
+        }
         Function.read(function_place);
 //-----------------------------------------分割线------------------------------
 
@@ -49,8 +52,8 @@ public class Main {
                 } else if(source.equals("DELETE-GAME")){//重置
                     try {
                         for (GamesChoosing.SetGame setGame : GamesChoosing.gameList) {
-                            FileWriter writer = new FileWriter(setGame.source);
-                            writer.write("999999999");
+                            FileWriter writer = new FileWriter("file/"+setGame.source);
+                            writer.write(GamesChoosing.MAX_VALUE);
                             writer.close();
                         }
                         System.out.println("Done.");

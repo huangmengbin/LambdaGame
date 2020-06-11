@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="67_nb">
-    <output-path>$PROJECT_DIR$/out/artifacts/67_nb</output-path>
-    <root id="archive" name="67_nb.jar">
-      <element id="module-output" name="LambdaGame" />
-    </root>
-  </artifact>
-</component>
